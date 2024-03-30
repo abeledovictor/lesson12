@@ -35,7 +35,7 @@ contract TokenizedBallot {
         // use external calls to do it (help IMyToken tokenContract)
         // cliff period: targetBlockNumber (it accounts for votes in X time in the past, example: airdrop snapshot)
 
-        require(tokenContract.getPastVotes(msg.sender, targetBlockNumber) - votePowerSpent >= amount, "Not enough voting power");
+        require(tokenContract.getPastVotes(msg.sender, targetBlockNumber) - votePowerSpent[msg.sender] >= amount, "Not enough voting power");
         votePowerSpent[msg.sender] += amount;
         proposals[proposal].voteCount += amount;
     }
