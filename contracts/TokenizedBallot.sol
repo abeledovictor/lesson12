@@ -14,6 +14,7 @@ contract TokenizedBallot {
     IMyToken public tokenContract;
     Proposal[] public proposals;
     uint256 public targetBlockNumber;
+    mapping (address => uint) public votePowerSpent;
 
     constructor(
         bytes32[] memory _proposalNames,
@@ -30,6 +31,13 @@ contract TokenizedBallot {
 
     function vote(uint256 proposal, uint256 amount) external {
         // TODO: Implement vote function
+        // get amount of voting power, depending of voting power of that token
+        // use external calls to do it (help IMyToken tokenContract)
+        // cliff period: targetBlockNumber (it accounts for votes in X time in the past, example: airdrop snapshot)
+
+        require(tokenContract.getPastVotes(msg.sender, targetBlockNumber) - votePowerSpent >= amount, "Not enough voting power");
+        votePowerSpent[msg.sender] += amount;
+        proposals[proposal].voteCount += amount;
     }
 
     function winningProposal() public view returns (uint winningProposal_) {
